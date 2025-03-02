@@ -13,10 +13,12 @@ public class AlumnoJFrame extends javax.swing.JFrame {
     // URL del servicio REST
     private static final String BASE_URL = "http://localhost:8080/alumnos";
 
-    // Componentes de la interfaz que vamos a agregar
+    // Componentes de la interfaz que vamos a agregar - DEFINIDOS FUERA DE LA SECCIÓN PROTEGIDA
     private JTable alumnosTable;
     private DefaultTableModel tableModel;
     private JTextField idField, nombreField, edadField;
+    // Campos extendidos
+    private JTextField carreraField, paisField, promedioField, semestreField, emailField;
     private JButton refreshButton, getByIdButton, addButton, updateButton, deleteButton, clearButton;
     private JPanel formPanel, buttonPanel, tablePanel;
 
@@ -31,7 +33,7 @@ public class AlumnoJFrame extends javax.swing.JFrame {
 
         // Configuración adicional de la ventana
         setTitle("Gestión de Alumnos");
-        setSize(800, 600);
+        setSize(900, 700);
         setLocationRelativeTo(null);
 
         // Cargar datos iniciales
@@ -49,8 +51,8 @@ public class AlumnoJFrame extends javax.swing.JFrame {
 
     // Este método configura nuestros componentes adicionales
     private void setupAdditionalComponents() {
-        // Tabla de alumnos
-        String[] columns = {"ID", "Nombre", "Edad"};
+        // Tabla de alumnos con campos extendidos
+        String[] columns = {"ID", "Nombre", "Edad", "Carrera", "País", "Promedio", "Semestre"};
         tableModel = new DefaultTableModel(columns, 0) {
             @Override
             public boolean isCellEditable(int row, int column) {
@@ -61,11 +63,25 @@ public class AlumnoJFrame extends javax.swing.JFrame {
         alumnosTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         alumnosTable.getTableHeader().setReorderingAllowed(false);
 
-        // Campos de texto
+        // Configurar ancho preferido de columnas
+        alumnosTable.getColumnModel().getColumn(0).setPreferredWidth(30);  // ID
+        alumnosTable.getColumnModel().getColumn(1).setPreferredWidth(150); // Nombre
+        alumnosTable.getColumnModel().getColumn(2).setPreferredWidth(50);  // Edad
+        alumnosTable.getColumnModel().getColumn(3).setPreferredWidth(150); // Carrera
+        alumnosTable.getColumnModel().getColumn(4).setPreferredWidth(100); // País
+        alumnosTable.getColumnModel().getColumn(5).setPreferredWidth(80);  // Promedio
+        alumnosTable.getColumnModel().getColumn(6).setPreferredWidth(80);  // Semestre
+
+        // Campos de texto para todos los atributos
         idField = new JTextField(10);
         idField.setEditable(false); // El ID no se edita manualmente
         nombreField = new JTextField(20);
         edadField = new JTextField(5);
+        carreraField = new JTextField(20);
+        paisField = new JTextField(15);
+        promedioField = new JTextField(5);
+        semestreField = new JTextField(5);
+        emailField = new JTextField(25);
 
         // Botones
         refreshButton = new JButton("Refrescar Lista");
@@ -78,9 +94,9 @@ public class AlumnoJFrame extends javax.swing.JFrame {
 
     // Este método configura el layout
     private void setupLayout() {
-        // Limpiamos el layout autogenerado por NetBeans
-        getContentPane().removeAll();
-        getContentPane().setLayout(new BorderLayout(10, 10));
+        // Crear un nuevo contentPane en lugar de modificar el existente
+        Container contentPane = new JPanel(new BorderLayout(10, 10));
+        setContentPane(contentPane);
 
         // Panel del formulario
         formPanel = new JPanel(new GridBagLayout());
@@ -90,7 +106,7 @@ public class AlumnoJFrame extends javax.swing.JFrame {
         gbc.insets = new Insets(5, 5, 5, 5);
         gbc.anchor = GridBagConstraints.WEST;
 
-        // Fila 1: ID
+        // Fila 1: ID y Carrera
         gbc.gridx = 0;
         gbc.gridy = 0;
         formPanel.add(new JLabel("ID:"), gbc);
@@ -99,7 +115,15 @@ public class AlumnoJFrame extends javax.swing.JFrame {
         gbc.fill = GridBagConstraints.HORIZONTAL;
         formPanel.add(idField, gbc);
 
-        // Fila 2: Nombre
+        gbc.gridx = 2;
+        gbc.fill = GridBagConstraints.NONE;
+        formPanel.add(new JLabel("Carrera:"), gbc);
+
+        gbc.gridx = 3;
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        formPanel.add(carreraField, gbc);
+
+        // Fila 2: Nombre y País
         gbc.gridx = 0;
         gbc.gridy = 1;
         gbc.fill = GridBagConstraints.NONE;
@@ -109,7 +133,15 @@ public class AlumnoJFrame extends javax.swing.JFrame {
         gbc.fill = GridBagConstraints.HORIZONTAL;
         formPanel.add(nombreField, gbc);
 
-        // Fila 3: Edad
+        gbc.gridx = 2;
+        gbc.fill = GridBagConstraints.NONE;
+        formPanel.add(new JLabel("País:"), gbc);
+
+        gbc.gridx = 3;
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        formPanel.add(paisField, gbc);
+
+        // Fila 3: Edad y Semestre
         gbc.gridx = 0;
         gbc.gridy = 2;
         gbc.fill = GridBagConstraints.NONE;
@@ -118,6 +150,32 @@ public class AlumnoJFrame extends javax.swing.JFrame {
         gbc.gridx = 1;
         gbc.fill = GridBagConstraints.HORIZONTAL;
         formPanel.add(edadField, gbc);
+
+        gbc.gridx = 2;
+        gbc.fill = GridBagConstraints.NONE;
+        formPanel.add(new JLabel("Semestre:"), gbc);
+
+        gbc.gridx = 3;
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        formPanel.add(semestreField, gbc);
+
+        // Fila 4: Promedio y Email
+        gbc.gridx = 0;
+        gbc.gridy = 3;
+        gbc.fill = GridBagConstraints.NONE;
+        formPanel.add(new JLabel("Promedio:"), gbc);
+
+        gbc.gridx = 1;
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        formPanel.add(promedioField, gbc);
+
+        gbc.gridx = 2;
+        gbc.fill = GridBagConstraints.NONE;
+        formPanel.add(new JLabel("Email:"), gbc);
+
+        gbc.gridx = 3;
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        formPanel.add(emailField, gbc);
 
         // Panel de botones
         buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 5, 5));
@@ -134,11 +192,9 @@ public class AlumnoJFrame extends javax.swing.JFrame {
         tablePanel.add(new JScrollPane(alumnosTable), BorderLayout.CENTER);
 
         // Añadir todo al frame principal
-        add(formPanel, BorderLayout.NORTH);
-        add(buttonPanel, BorderLayout.SOUTH);
-        add(tablePanel, BorderLayout.CENTER);
-
-        pack();
+        contentPane.add(formPanel, BorderLayout.NORTH);
+        contentPane.add(buttonPanel, BorderLayout.SOUTH);
+        contentPane.add(tablePanel, BorderLayout.CENTER);
     }
 
     // Este método configura los listeners de eventos
@@ -150,6 +206,23 @@ public class AlumnoJFrame extends javax.swing.JFrame {
                 idField.setText(alumnosTable.getValueAt(row, 0).toString());
                 nombreField.setText(alumnosTable.getValueAt(row, 1).toString());
                 edadField.setText(alumnosTable.getValueAt(row, 2).toString());
+
+                // Valores para los campos extendidos (con manejo seguro de null)
+                carreraField.setText(alumnosTable.getValueAt(row, 3) != null
+                        ? alumnosTable.getValueAt(row, 3).toString() : "");
+                paisField.setText(alumnosTable.getValueAt(row, 4) != null
+                        ? alumnosTable.getValueAt(row, 4).toString() : "");
+                promedioField.setText(alumnosTable.getValueAt(row, 5) != null
+                        ? alumnosTable.getValueAt(row, 5).toString() : "");
+                semestreField.setText(alumnosTable.getValueAt(row, 6) != null
+                        ? alumnosTable.getValueAt(row, 6).toString() : "");
+
+                // El email no se muestra en la tabla, lo obtenemos del backend
+                try {
+                    getAlumnoById(Integer.parseInt(idField.getText()));
+                } catch (Exception ex) {
+                    // Si falla, no actualizamos el campo email
+                }
             }
         });
 
@@ -166,6 +239,7 @@ public class AlumnoJFrame extends javax.swing.JFrame {
                 );
             }
         });
+
         getByIdButton.addActionListener(e -> {
             String idStr = JOptionPane.showInputDialog(this, "Introduce el ID del alumno:");
             if (idStr != null && !idStr.isEmpty()) {
@@ -251,6 +325,34 @@ public class AlumnoJFrame extends javax.swing.JFrame {
             return false;
         }
 
+        // Validar promedio si está presente
+        if (!promedioField.getText().trim().isEmpty()) {
+            try {
+                double promedio = Double.parseDouble(promedioField.getText().trim());
+                if (promedio < 0 || promedio > 10) {
+                    JOptionPane.showMessageDialog(this, "El promedio debe estar entre 0 y 10", "Error", JOptionPane.ERROR_MESSAGE);
+                    return false;
+                }
+            } catch (NumberFormatException e) {
+                JOptionPane.showMessageDialog(this, "El promedio debe ser un número", "Error", JOptionPane.ERROR_MESSAGE);
+                return false;
+            }
+        }
+
+        // Validar semestre si está presente
+        if (!semestreField.getText().trim().isEmpty()) {
+            try {
+                int semestre = Integer.parseInt(semestreField.getText().trim());
+                if (semestre < 1 || semestre > 12) {
+                    JOptionPane.showMessageDialog(this, "El semestre debe estar entre 1 y 12", "Error", JOptionPane.ERROR_MESSAGE);
+                    return false;
+                }
+            } catch (NumberFormatException e) {
+                JOptionPane.showMessageDialog(this, "El semestre debe ser un número", "Error", JOptionPane.ERROR_MESSAGE);
+                return false;
+            }
+        }
+
         return true;
     }
 
@@ -265,10 +367,21 @@ public class AlumnoJFrame extends javax.swing.JFrame {
         // Llenar con los nuevos datos
         for (int i = 0; i < jsonArray.length(); i++) {
             JSONObject jsonObject = jsonArray.getJSONObject(i);
+
+            // Manejo seguro de valores opcionales
+            String carrera = jsonObject.has("carrera") ? jsonObject.getString("carrera") : "";
+            String pais = jsonObject.has("paisOrigen") ? jsonObject.getString("paisOrigen") : "";
+            Double promedio = jsonObject.has("promedio") ? jsonObject.getDouble("promedio") : null;
+            Integer semestre = jsonObject.has("semestre") ? jsonObject.getInt("semestre") : null;
+
             Object[] row = {
                 jsonObject.getInt("id"),
                 jsonObject.getString("nombre"),
-                jsonObject.getInt("edad")
+                jsonObject.getInt("edad"),
+                carrera,
+                pais,
+                promedio,
+                semestre
             };
             tableModel.addRow(row);
         }
@@ -282,10 +395,17 @@ public class AlumnoJFrame extends javax.swing.JFrame {
             String response = sendRequest(BASE_URL + "/" + id, "GET", null);
             JSONObject jsonObject = new JSONObject(response);
 
-            // Actualizar el formulario
+            // Actualizar el formulario con todos los campos
             idField.setText(String.valueOf(jsonObject.getInt("id")));
             nombreField.setText(jsonObject.getString("nombre"));
             edadField.setText(String.valueOf(jsonObject.getInt("edad")));
+
+            // Manejo seguro de valores opcionales
+            carreraField.setText(jsonObject.has("carrera") ? jsonObject.getString("carrera") : "");
+            paisField.setText(jsonObject.has("paisOrigen") ? jsonObject.getString("paisOrigen") : "");
+            promedioField.setText(jsonObject.has("promedio") ? String.valueOf(jsonObject.getDouble("promedio")) : "");
+            semestreField.setText(jsonObject.has("semestre") ? String.valueOf(jsonObject.getInt("semestre")) : "");
+            emailField.setText(jsonObject.has("email") ? jsonObject.getString("email") : "");
 
             // Seleccionar la fila correspondiente en la tabla
             for (int i = 0; i < tableModel.getRowCount(); i++) {
@@ -309,6 +429,23 @@ public class AlumnoJFrame extends javax.swing.JFrame {
             JSONObject jsonObject = new JSONObject();
             jsonObject.put("nombre", nombreField.getText().trim());
             jsonObject.put("edad", Integer.parseInt(edadField.getText().trim()));
+
+            // Añadir campos opcionales si tienen valor
+            if (!carreraField.getText().trim().isEmpty()) {
+                jsonObject.put("carrera", carreraField.getText().trim());
+            }
+            if (!paisField.getText().trim().isEmpty()) {
+                jsonObject.put("paisOrigen", paisField.getText().trim());
+            }
+            if (!promedioField.getText().trim().isEmpty()) {
+                jsonObject.put("promedio", Double.parseDouble(promedioField.getText().trim()));
+            }
+            if (!semestreField.getText().trim().isEmpty()) {
+                jsonObject.put("semestre", Integer.parseInt(semestreField.getText().trim()));
+            }
+            if (!emailField.getText().trim().isEmpty()) {
+                jsonObject.put("email", emailField.getText().trim());
+            }
 
             // Enviar la solicitud POST
             String response = sendRequest(BASE_URL, "POST", jsonObject.toString());
@@ -334,6 +471,23 @@ public class AlumnoJFrame extends javax.swing.JFrame {
             JSONObject jsonObject = new JSONObject();
             jsonObject.put("nombre", nombreField.getText().trim());
             jsonObject.put("edad", Integer.parseInt(edadField.getText().trim()));
+
+            // Añadir campos opcionales si tienen valor
+            if (!carreraField.getText().trim().isEmpty()) {
+                jsonObject.put("carrera", carreraField.getText().trim());
+            }
+            if (!paisField.getText().trim().isEmpty()) {
+                jsonObject.put("paisOrigen", paisField.getText().trim());
+            }
+            if (!promedioField.getText().trim().isEmpty()) {
+                jsonObject.put("promedio", Double.parseDouble(promedioField.getText().trim()));
+            }
+            if (!semestreField.getText().trim().isEmpty()) {
+                jsonObject.put("semestre", Integer.parseInt(semestreField.getText().trim()));
+            }
+            if (!emailField.getText().trim().isEmpty()) {
+                jsonObject.put("email", emailField.getText().trim());
+            }
 
             // Enviar la solicitud PUT
             String response = sendRequest(BASE_URL + "/" + id, "PUT", jsonObject.toString());
@@ -375,6 +529,11 @@ public class AlumnoJFrame extends javax.swing.JFrame {
         idField.setText("");
         nombreField.setText("");
         edadField.setText("");
+        carreraField.setText("");
+        paisField.setText("");
+        promedioField.setText("");
+        semestreField.setText("");
+        emailField.setText("");
         alumnosTable.clearSelection();
     }
 
@@ -414,6 +573,7 @@ public class AlumnoJFrame extends javax.swing.JFrame {
             }
         }
     }
-}
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     // End of variables declaration//GEN-END:variables
+}

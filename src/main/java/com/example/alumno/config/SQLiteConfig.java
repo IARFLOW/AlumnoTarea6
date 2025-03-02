@@ -19,18 +19,26 @@ public class SQLiteConfig {
                 .url("jdbc:sqlite:alumnos.db")
                 .build();
                 
-        // Crear la tabla si no existe
+        // Crear la tabla extendida si no existe
         try (Connection conn = dataSource.getConnection(); 
              Statement stmt = conn.createStatement()) {
             
             stmt.execute("CREATE TABLE IF NOT EXISTS alumnos (" +
                          "id INTEGER PRIMARY KEY AUTOINCREMENT," +
                          "nombre TEXT NOT NULL," +
-                         "edad INTEGER NOT NULL" +
+                         "edad INTEGER NOT NULL," +
+                         "carrera TEXT," +
+                         "pais_origen TEXT," +
+                         "promedio REAL," +
+                         "semestre INTEGER," +
+                         "email TEXT" +
                          ")");
                          
+            System.out.println("Base de datos inicializada correctamente");
+            
         } catch (SQLException e) {
             System.err.println("Error al inicializar la base de datos: " + e.getMessage());
+            e.printStackTrace();
         }
         
         return dataSource;
