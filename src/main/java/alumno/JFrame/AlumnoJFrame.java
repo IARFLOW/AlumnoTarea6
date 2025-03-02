@@ -538,9 +538,12 @@ public class AlumnoJFrame extends javax.swing.JFrame {
     }
 
     private String sendRequest(String urlStr, String method, String jsonBody) throws Exception {
+        System.out.println("Intentando conectar a: " + urlStr);
         URL url = new URL(urlStr);
         HttpURLConnection conn = (HttpURLConnection) url.openConnection();
         conn.setRequestMethod(method);
+        conn.setConnectTimeout(10000); // 10 segundos de timeout
+        conn.setReadTimeout(10000);    // 10 segundos para leer
 
         if (jsonBody != null) {
             conn.setDoOutput(true);
@@ -550,6 +553,7 @@ public class AlumnoJFrame extends javax.swing.JFrame {
                 os.write(input, 0, input.length);
             }
         }
+        System.out.println("Código de respuesta: " + conn.getResponseCode());
 
         int responseCode = conn.getResponseCode();
 
