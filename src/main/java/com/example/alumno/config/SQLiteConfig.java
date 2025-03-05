@@ -19,7 +19,6 @@ public class SQLiteConfig {
                 .url("jdbc:sqlite:alumnos.db")
                 .build();
                 
-        // Crear la tabla extendida si no existe
         try (Connection conn = dataSource.getConnection(); 
              Statement stmt = conn.createStatement()) {
             

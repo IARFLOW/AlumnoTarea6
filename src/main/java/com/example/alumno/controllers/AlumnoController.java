@@ -112,13 +112,11 @@ public class AlumnoController {
         }
     }
 
-    // GET - Obtener todos los alumnos
     @GetMapping
     public List<AlumnoModel> getAlumnos() {
         return alumnoRepository.findAll();
     }
 
-    // GET - Obtener un alumno por ID
     @GetMapping("/{id}")
     public ResponseEntity<AlumnoModel> getAlumno(@PathVariable int id) {
         Optional<AlumnoModel> alumno = alumnoRepository.findById(id);
@@ -126,7 +124,6 @@ public class AlumnoController {
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
-    // POST - Crear un nuevo alumno
     @PostMapping
     public ResponseEntity<AlumnoModel> addAlumno(@RequestBody AlumnoModel alumno) {
         // Asegurar que estamos creando un nuevo alumno
@@ -135,7 +132,6 @@ public class AlumnoController {
         return new ResponseEntity<>(savedAlumno, HttpStatus.CREATED);
     }
 
-    // PUT - Actualizar un alumno existente
     @PutMapping("/{id}")
     public ResponseEntity<AlumnoModel> updateAlumno(@PathVariable int id, @RequestBody AlumnoModel alumno) {
         if (!alumnoRepository.existsById(id)) {
@@ -147,7 +143,6 @@ public class AlumnoController {
         return ResponseEntity.ok(updatedAlumno);
     }
 
-    // DELETE - Eliminar un alumno
     @DeleteMapping("/{id}")
     public ResponseEntity<String> deleteAlumno(@PathVariable int id) {
         if (!alumnoRepository.existsById(id)) {
